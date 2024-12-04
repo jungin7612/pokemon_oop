@@ -23,8 +23,9 @@ private:
 class Pokemon
 {
 public:
-    Pokemon(std::string n, int m, std::string t, Skill s1, Skill s2, Skill s3, Skill s4)
+    Pokemon(int no, std::string n, int m, std::string t, Skill s1, Skill s2, Skill s3, Skill s4)
     {
+        number = no;
         name = n;
         max_hp = m;
         type = t;
@@ -35,6 +36,7 @@ public:
     }
 
 private:
+    int number;
     std::string name;
     int max_hp;
     std::string type;
@@ -66,5 +68,25 @@ int main()
     Skill Surf("Surf", "Water", 13, 10);
     Skill Spatial_Rend("Spatial_Rend", "Normal", 30, 10);
 
-        return 0;
+    Pokemon Pikachu(0, "Pikachu", 35, "Electric", Tackle, Grass_Knot, Thunderbolt, Megabolt);
+    Pokemon Dratini(1, "Dratini", 41, "Water", Wrap, Aqua_Tail, Water_Pulse, Hyper_Beam);
+    Pokemon Eevee(2, "Eevee", 55, "Normal", Tackle, Sand_Attack, Bite, Rain_Dance);
+    Pokemon Charmander(3, "Charmander", 39, "Fire", Tackle, Flamethrower, Dig, Heat_Wave);
+    Pokemon Palkia(4, "Palkia", 90, "Water", Hydro_pump, Earth_Power, Surf, Spatial_Rend);
+
+    int Pokemon1;
+    int Pokemon2;
+    std::cout << "Choose a Pokemon(0~4): ";
+    std::cin >> Pokemon1;
+    std::cout << std::endl;
+    std::cout << "Choose a Pokemon(0~4): ";
+    std::cin >> Pokemon2;
+
+    if (Pokemon1 == Pokemon2)
+    {
+        std::cout << "You have to choose Pokemons different from each other." << std::endl;
+        exit(0);
+    }
+
+    return 0;
 }
