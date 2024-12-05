@@ -54,12 +54,32 @@ public:
     int getHP() const { return current_hp; }
     const Skill *getSkills() const { return skill_list; }
     int getLastUsedSkill() const { return last_used_skill; }
-    void useSkill(int skillIndex)
+    void useSkill(int skillIndex, Pokemon &defender)
     {
         if (skillIndex >= 0 && skillIndex < 4 && skill_list[skillIndex].getCurrentTry() > 0)
         {
             skill_list[skillIndex].useSkill();
             last_used_skill = skillIndex;
+            int damage = skill_list[skillIndex].getDamage();
+
+            // 타입 상성 적용
+            std::string attackType = skill_list[skillIndex].getType();
+            std::string defenderType = defender.getType();
+            if (isSuperEffective(attackType, defenderType))
+            {
+                damage += 5;
+            }
+            else if (isNotVeryEffective(attackType, defenderType))
+            {
+                damage -= 3;
+            }
+
+            // HP 감소
+            defender.current_hp -= damage;
+            if (defender.current_hp < 0)
+            {
+                defender.current_hp = 0;
+            }
         }
     }
 
@@ -71,6 +91,41 @@ private:
     std::string type;
     Skill skill_list[4];
     int last_used_skill;
+
+    bool isSuperEffective(const std::string &attackType, const std::string &defenderType)
+    {
+        if ((attackType == "Electric" && defenderType == "Water") ||
+            (attackType == "Ground" && defenderType == "Electric") ||
+            (attackType == "Water" && defenderType == "Fire") ||
+            (attackType == "Grass" && defenderType == "Water") ||
+            (attackType == "Fire" && defenderType == "Grass") ||
+            (attackType == "Water" && defenderType == "Ground") ||
+            (attackType == "Ground" && defenderType == "Fire"))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    bool isNotVeryEffective(const std::string &attackType, const std::string &defenderType)
+    {
+        if ((attackType == "Electric" && defenderType == "Ground") ||
+            (attackType == "Electric" && defenderType == "Electric") ||
+            (attackType == "Electric" && defenderType == "Grass") ||
+            (attackType == "Water" && defenderType == "Grass") ||
+            (attackType == "Water" && defenderType == "Water") ||
+            (attackType == "Grass" && defenderType == "Fire") ||
+            (attackType == "Grass" && defenderType == "Ground") ||
+            (attackType == "Grass" && defenderType == "Grass") ||
+            (attackType == "Fire" && defenderType == "Water") ||
+            (attackType == "Fire" && defenderType == "Fire") ||
+            (attackType == "Ground" && defenderType == "Grass"))
+
+        {
+            return true;
+        }
+        return false;
+    }
 };
 
 void drawRowLine()
@@ -112,18 +167,21 @@ void printTwoColumnContent(const Pokemon &leftPokemon, const Pokemon &rightPokem
         std::cout << " |" << std::endl;
     };
 
+    // 포켓몬 기본 정보 출력
     std::string leftIndicator = (turn == 0) ? "(*)" : "";
     std::string rightIndicator = (turn == 1) ? "(*)" : "";
     printRow(leftPokemon.getName() + " " + leftIndicator, rightPokemon.getName() + " " + rightIndicator, 28, 28);
     printRow("Type: " + leftPokemon.getType(), "Type: " + rightPokemon.getType(), 28, 28);
     printRow("HP: " + std::to_string(leftPokemon.getHP()), "HP: " + std::to_string(rightPokemon.getHP()), 28, 28);
 
+    // 최근 사용한 스킬 출력
     drawRowLine();
     std::string leftLastSkill = (leftPokemon.getLastUsedSkill() != -1) ? leftPokemon.getSkills()[leftPokemon.getLastUsedSkill()].getName() : "-";
     std::string rightLastSkill = (rightPokemon.getLastUsedSkill() != -1) ? rightPokemon.getSkills()[rightPokemon.getLastUsedSkill()].getName() : "-";
     printRow("Latest Skill: " + leftLastSkill, "Latest Skill: " + rightLastSkill, 28, 28);
     drawRowLine();
 
+    // 포켓몬 스킬 출력
     const Skill *leftSkills = leftPokemon.getSkills();
     const Skill *rightSkills = rightPokemon.getSkills();
     for (size_t i = 0; i < 4; ++i)
@@ -183,7 +241,7 @@ int main()
         return 0;
     }
 
-    int turn = 0;
+    int turn = 0; // 0 for leftPokemon, 1 for rightPokemon
     std::string title = "2024-02 Object-Oriented Programming Pokemon Master";
     printTitle(title);
     printTwoColumnContent(pokemons[Pokemon1], pokemons[Pokemon2], turn);
@@ -197,12 +255,12 @@ int main()
 
         if (turn == 0)
         {
-            pokemons[Pokemon1].useSkill(skillChoice);
+            pokemons[Pokemon1].useSkill(skillChoice, pokemons[Pokemon2]);
             turn = 1;
         }
         else
         {
-            pokemons[Pokemon2].useSkill(skillChoice);
+            pokemons[Pokemon2].useSkill(skillChoice, pokemons[Pokemon1]);
             turn = 0;
         }
 
