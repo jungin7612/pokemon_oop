@@ -56,39 +56,48 @@ public:
     int getLastUsedSkill() const { return last_used_skill; }
     void useSkill(int skillIndex, Pokemon &defender)
     {
-        if (skillIndex >= 0 && skillIndex < 4 && skill_list[skillIndex].getCurrentTry() > 0)
+        if (skillIndex >= 0 && skillIndex < 4)
         {
-            skill_list[skillIndex].useSkill();
-            last_used_skill = skillIndex;
-            int damage = skill_list[skillIndex].getDamage();
+            if (skill_list[skillIndex].getCurrentTry() > 0)
+            {
+                skill_list[skillIndex].useSkill();
+                last_used_skill = skillIndex;
+                int damage = skill_list[skillIndex].getDamage();
 
-            // 타입 상성 적용
-            std::string attackType = skill_list[skillIndex].getType();
-            std::string defenderType = defender.getType();
-            if (isSuperEffective(attackType, defenderType))
-            {
-                damage += 5;
-                effectiveness_message = "It was super effective.";
-            }
-            else if (isNotVeryEffective(attackType, defenderType))
-            {
-                damage -= 3;
-                effectiveness_message = "It was not very effective.";
+                // 타입 상성 적용
+                std::string attackType = skill_list[skillIndex].getType();
+                std::string defenderType = defender.getType();
+                if (isSuperEffective(attackType, defenderType))
+                {
+                    damage += 5;
+                    effectiveness_message = "It was super effective.";
+                }
+                else if (isNotVeryEffective(attackType, defenderType))
+                {
+                    damage -= 3;
+                    effectiveness_message = "It was not very effective.";
+                }
+                else
+                {
+                    effectiveness_message = "It was effective.";
+                }
+
+                // HP 감소
+                defender.current_hp -= damage;
+                if (defender.current_hp < 0)
+                {
+                    defender.current_hp = 0;
+                }
+
+                // 사용된 스킬 메시지 설정
+                skill_use_message = name + " used " + skill_list[skillIndex].getName() + ".";
             }
             else
             {
-                effectiveness_message = "It was effective.";
+                // 스킬 사용 실패 메시지 설정
+                skill_use_message = name + " failed to perform " + skill_list[skillIndex].getName() + ".";
+                effectiveness_message = "";
             }
-
-            // HP 감소
-            defender.current_hp -= damage;
-            if (defender.current_hp < 0)
-            {
-                defender.current_hp = 0;
-            }
-
-            // 사용된 스킬 메시지 설정
-            skill_use_message = name + " used " + skill_list[skillIndex].getName() + ".";
         }
     }
 
