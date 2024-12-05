@@ -287,6 +287,7 @@ int main()
             turn = 0;
         }
 
+        printTitle(title);
         printTwoColumnContent(pokemons[Pokemon1], pokemons[Pokemon2], turn);
         drawRowLine();
     }
