@@ -18,6 +18,11 @@ public:
     int getDamage() const { return damage; }
     int getCurrentTry() const { return currentTry; }
     int getMaxTry() const { return maxTry; }
+    void useSkill()
+    {
+        if (currentTry > 0)
+            --currentTry;
+    }
 
 private:
     std::string name;
@@ -42,11 +47,21 @@ public:
         skill_list[1] = s2;
         skill_list[2] = s3;
         skill_list[3] = s4;
+        last_used_skill = -1;
     }
     std::string getName() const { return name; }
     std::string getType() const { return type; }
     int getHP() const { return current_hp; }
     const Skill *getSkills() const { return skill_list; }
+    int getLastUsedSkill() const { return last_used_skill; }
+    void useSkill(int skillIndex)
+    {
+        if (skillIndex >= 0 && skillIndex < 4 && skill_list[skillIndex].getCurrentTry() > 0)
+        {
+            skill_list[skillIndex].useSkill();
+            last_used_skill = skillIndex;
+        }
+    }
 
 private:
     int number;
@@ -55,6 +70,7 @@ private:
     int current_hp;
     std::string type;
     Skill skill_list[4];
+    int last_used_skill;
 };
 
 void drawRowLine()
@@ -79,7 +95,7 @@ void printTitle(const std::string &title)
     drawRowLine();
 }
 
-void printTwoColumnContent(const Pokemon &leftPokemon, const Pokemon &rightPokemon)
+void printTwoColumnContent(const Pokemon &leftPokemon, const Pokemon &rightPokemon, int turn)
 {
     auto printRow = [](const std::string &left, const std::string &right, size_t leftWidth, size_t rightWidth)
     {
@@ -96,12 +112,18 @@ void printTwoColumnContent(const Pokemon &leftPokemon, const Pokemon &rightPokem
         std::cout << " |" << std::endl;
     };
 
-    // 포켓몬 기본 정보 출력
-    printRow(leftPokemon.getName(), rightPokemon.getName(), 28, 28);
+    std::string leftIndicator = (turn == 0) ? "(*)" : "";
+    std::string rightIndicator = (turn == 1) ? "(*)" : "";
+    printRow(leftPokemon.getName() + " " + leftIndicator, rightPokemon.getName() + " " + rightIndicator, 28, 28);
     printRow("Type: " + leftPokemon.getType(), "Type: " + rightPokemon.getType(), 28, 28);
     printRow("HP: " + std::to_string(leftPokemon.getHP()), "HP: " + std::to_string(rightPokemon.getHP()), 28, 28);
 
-    // 포켓몬 스킬 출력
+    drawRowLine();
+    std::string leftLastSkill = (leftPokemon.getLastUsedSkill() != -1) ? leftPokemon.getSkills()[leftPokemon.getLastUsedSkill()].getName() : "-";
+    std::string rightLastSkill = (rightPokemon.getLastUsedSkill() != -1) ? rightPokemon.getSkills()[rightPokemon.getLastUsedSkill()].getName() : "-";
+    printRow("Latest Skill: " + leftLastSkill, "Latest Skill: " + rightLastSkill, 28, 28);
+    drawRowLine();
+
     const Skill *leftSkills = leftPokemon.getSkills();
     const Skill *rightSkills = rightPokemon.getSkills();
     for (size_t i = 0; i < 4; ++i)
@@ -161,10 +183,32 @@ int main()
         return 0;
     }
 
+    int turn = 0;
     std::string title = "2024-02 Object-Oriented Programming Pokemon Master";
     printTitle(title);
-    printTwoColumnContent(pokemons[Pokemon1], pokemons[Pokemon2]);
+    printTwoColumnContent(pokemons[Pokemon1], pokemons[Pokemon2], turn);
     drawRowLine();
+
+    while (true)
+    {
+        int skillChoice;
+        std::cout << "Choose a skill (0~3): ";
+        std::cin >> skillChoice;
+
+        if (turn == 0)
+        {
+            pokemons[Pokemon1].useSkill(skillChoice);
+            turn = 1;
+        }
+        else
+        {
+            pokemons[Pokemon2].useSkill(skillChoice);
+            turn = 0;
+        }
+
+        printTwoColumnContent(pokemons[Pokemon1], pokemons[Pokemon2], turn);
+        drawRowLine();
+    }
 
     return 0;
 }
