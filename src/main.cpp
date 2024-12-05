@@ -68,10 +68,16 @@ public:
             if (isSuperEffective(attackType, defenderType))
             {
                 damage += 5;
+                effectiveness_message = "It was super effective.";
             }
             else if (isNotVeryEffective(attackType, defenderType))
             {
                 damage -= 3;
+                effectiveness_message = "It was not very effective.";
+            }
+            else
+            {
+                effectiveness_message = "It was effective.";
             }
 
             // HP 감소
@@ -80,8 +86,14 @@ public:
             {
                 defender.current_hp = 0;
             }
+
+            // 사용된 스킬 메시지 설정
+            skill_use_message = name + " used " + skill_list[skillIndex].getName() + ".";
         }
     }
+
+    std::string getSkillUseMessage() const { return skill_use_message; }
+    std::string getEffectivenessMessage() const { return effectiveness_message; }
 
 private:
     int number;
@@ -91,6 +103,8 @@ private:
     std::string type;
     Skill skill_list[4];
     int last_used_skill;
+    std::string skill_use_message;
+    std::string effectiveness_message;
 
     bool isSuperEffective(const std::string &attackType, const std::string &defenderType)
     {
@@ -179,6 +193,11 @@ void printTwoColumnContent(const Pokemon &leftPokemon, const Pokemon &rightPokem
     std::string leftLastSkill = (leftPokemon.getLastUsedSkill() != -1) ? leftPokemon.getSkills()[leftPokemon.getLastUsedSkill()].getName() : "-";
     std::string rightLastSkill = (rightPokemon.getLastUsedSkill() != -1) ? rightPokemon.getSkills()[rightPokemon.getLastUsedSkill()].getName() : "-";
     printRow("Latest Skill: " + leftLastSkill, "Latest Skill: " + rightLastSkill, 28, 28);
+
+    // 효과 메시지 출력
+    std::string leftEffectivenessMessage = (leftPokemon.getLastUsedSkill() != -1) ? leftPokemon.getEffectivenessMessage() : "";
+    std::string rightEffectivenessMessage = (rightPokemon.getLastUsedSkill() != -1) ? rightPokemon.getEffectivenessMessage() : "";
+    printRow(leftEffectivenessMessage, rightEffectivenessMessage, 28, 28);
     drawRowLine();
 
     // 포켓몬 스킬 출력
@@ -256,11 +275,15 @@ int main()
         if (turn == 0)
         {
             pokemons[Pokemon1].useSkill(skillChoice, pokemons[Pokemon2]);
+            std::cout << pokemons[Pokemon1].getSkillUseMessage() << std::endl;
+            std::cout << pokemons[Pokemon1].getEffectivenessMessage() << std::endl;
             turn = 1;
         }
         else
         {
             pokemons[Pokemon2].useSkill(skillChoice, pokemons[Pokemon1]);
+            std::cout << pokemons[Pokemon2].getSkillUseMessage() << std::endl;
+            std::cout << pokemons[Pokemon2].getEffectivenessMessage() << std::endl;
             turn = 0;
         }
 
