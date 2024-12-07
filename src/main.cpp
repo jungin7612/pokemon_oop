@@ -156,7 +156,12 @@ private:
 void drawRowLine()
 {
     std::cout << "+";
-    for (int i = 0; i < 61; ++i)
+    for (int i = 0; i < 30; ++i)
+    {
+        std::cout << "-";
+    }
+    std::cout << "+";
+    for (int i = 0; i < 30; ++i)
     {
         std::cout << "-";
     }
@@ -165,7 +170,12 @@ void drawRowLine()
 
 void printTitle(const std::string &title)
 {
-    drawRowLine();
+    std::cout << "+";
+    for (int i = 0; i < 61; ++i)
+    {
+        std::cout << "-";
+    }
+    std::cout << "+" << std::endl;
     std::cout << "| " << title;
     for (size_t i = 0; i < 61 - title.length() - 2; ++i)
     {
@@ -260,9 +270,9 @@ int main()
     int Pokemon1;
     int Pokemon2;
 
-    std::cout << "Choose a Pokemon (0~4): ";
+    std::cout << "Choose a Pokemon(0~4): ";
     std::cin >> Pokemon1;
-    std::cout << "Choose a Pokemon (0~4): ";
+    std::cout << "Choose a Pokemon(0~4): ";
     std::cin >> Pokemon2;
 
     if (Pokemon1 == Pokemon2)
@@ -291,7 +301,7 @@ int main()
             {
                 std::cout << pokemons[Pokemon1].getEffectivenessMessage() << std::endl;
             }
-
+            std::cout << std::endl;
             if (pokemons[Pokemon2].getHP() == 0)
             {
                 std::cout << "===============================================================" << std::endl;
@@ -309,7 +319,7 @@ int main()
             {
                 std::cout << pokemons[Pokemon2].getEffectivenessMessage() << std::endl;
             }
-
+            std::cout << std::endl;
             if (pokemons[Pokemon1].getHP() == 0)
             {
                 std::cout << "===============================================================" << std::endl;
