@@ -294,6 +294,13 @@ int main()
                 std::cout << pokemons[Pokemon1].getEffectivenessMessage() << std::endl;
             }
 
+            if (pokemons[Pokemon2].getHP() == 0)
+            {
+                std::cout << "===============================================================" << std::endl;
+                std::cout << "Match Result: " << pokemons[Pokemon1].getName() << " defeats " << pokemons[Pokemon2].getName() << std::endl;
+                break;
+            }
+
             turn = 1;
         }
         else
@@ -303,6 +310,13 @@ int main()
             if (pokemons[Pokemon2].getIsSkillUsed() == 0)
             {
                 std::cout << pokemons[Pokemon2].getEffectivenessMessage() << std::endl;
+            }
+
+            if (pokemons[Pokemon1].getHP() == 0)
+            {
+                std::cout << "===============================================================" << std::endl;
+                std::cout << "Match Result: " << pokemons[Pokemon2].getName() << " defeats " << pokemons[Pokemon1].getName() << std::endl;
+                break;
             }
 
             turn = 0;
