@@ -1,2 +1,2 @@
-src/main
-src/*.txt
+.vscode
+build
