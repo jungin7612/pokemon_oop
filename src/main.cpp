@@ -57,49 +57,47 @@ public:
     int getLastUsedSkill() const { return last_used_skill; }
     void useSkill(int skillIndex, Pokemon &defender)
     {
-        if (skillIndex >= 0 && skillIndex < 4)
+
+        if (skill_list[skillIndex].getCurrentTry() > 0)
         {
-            if (skill_list[skillIndex].getCurrentTry() > 0)
+            skill_list[skillIndex].useSkill();
+            last_used_skill = skillIndex;
+            int damage = skill_list[skillIndex].getDamage();
+
+            // 타입 상성 적용
+            std::string attackType = skill_list[skillIndex].getType();
+            std::string defenderType = defender.getType();
+            if (isSuperEffective(attackType, defenderType))
             {
-                skill_list[skillIndex].useSkill();
-                last_used_skill = skillIndex;
-                int damage = skill_list[skillIndex].getDamage();
-
-                // 타입 상성 적용
-                std::string attackType = skill_list[skillIndex].getType();
-                std::string defenderType = defender.getType();
-                if (isSuperEffective(attackType, defenderType))
-                {
-                    damage += 5;
-                    effectiveness_message = "It was super effective.";
-                }
-                else if (isNotVeryEffective(attackType, defenderType))
-                {
-                    damage -= 3;
-                    effectiveness_message = "It was not very effective.";
-                }
-                else
-                {
-                    effectiveness_message = "It was effective.";
-                }
-
-                // HP 감소
-                defender.current_hp -= damage;
-                if (defender.current_hp < 0)
-                {
-                    defender.current_hp = 0;
-                }
-
-                // 사용된 스킬 메시지 설정
-                skill_use_message = name + " used " + skill_list[skillIndex].getName() + ".";
-                isSkillUsed = 0;
+                damage += 5;
+                effectiveness_message = "It was super effective.";
+            }
+            else if (isNotVeryEffective(attackType, defenderType))
+            {
+                damage -= 3;
+                effectiveness_message = "It was not very effective.";
             }
             else
             {
-                // 스킬 사용 실패 메시지 설정
-                skill_use_message = name + " failed to perform " + skill_list[skillIndex].getName() + ".";
-                isSkillUsed = 1;
+                effectiveness_message = "It was effective.";
             }
+
+            // HP 감소
+            defender.current_hp -= damage;
+            if (defender.current_hp < 0)
+            {
+                defender.current_hp = 0;
+            }
+
+            // 사용된 스킬 메시지 설정
+            skill_use_message = name + " used " + skill_list[skillIndex].getName() + ".";
+            isSkillUsed = 0;
+        }
+        else
+        {
+            // 스킬 사용 실패 메시지 설정
+            skill_use_message = name + " failed to perform " + skill_list[skillIndex].getName() + ".";
+            isSkillUsed = 1;
         }
     }
 
@@ -229,27 +227,27 @@ void printTwoColumnContent(const Pokemon &leftPokemon, const Pokemon &rightPokem
 int main()
 {
     Skill Tackle("Tackle", "Normal", 4, 5);
-    Skill Grass_Knot("Grass_Knot", "Grass", 8, 5);
+    Skill Grass_Knot("Grass Knot", "Grass", 8, 5);
     Skill Thunderbolt("Thunderbolt", "Electric", 10, 5);
     Skill Megabolt("Megabolt", "Electric", 15, 3);
 
     Skill Wrap("Wrap", "Normal", 4, 10);
-    Skill Aqua_Tail("Aqua_Tail", "Water", 3, 5);
-    Skill Water_Pulse("Water_Pulse", "Water", 13, 2);
+    Skill Aqua_Tail("Aqua Tail", "Water", 3, 5);
+    Skill Water_Pulse("Water Pulse", "Water", 13, 2);
     Skill Hyper_Beam("Hyper_Beam", "Normal", 20, 1);
 
-    Skill Sand_Attack("Sand_Attack", "Ground", 8, 3);
+    Skill Sand_Attack("Sand Attack", "Ground", 8, 3);
     Skill Bite("Bite", "Normal", 12, 3);
-    Skill Rain_Dance("Rain_Dance", "Water", 15, 1);
+    Skill Rain_Dance("Rain Dance", "Water", 15, 1);
 
     Skill Flamethrower("Flamethrower", "Fire", 11, 5);
     Skill Dig("Dig", "Ground", 7, 5);
-    Skill Heat_Wave("Heat_Wave", "Fire", 14, 5);
+    Skill Heat_Wave("Heat Wave", "Fire", 14, 5);
 
-    Skill Hydro_pump("Hydro_Pump", "Water", 12, 10);
-    Skill Earth_Power("Earth_Power", "Ground", 15, 10);
+    Skill Hydro_pump("Hydro Pump", "Water", 12, 10);
+    Skill Earth_Power("Earth Power", "Ground", 15, 10);
     Skill Surf("Surf", "Water", 13, 10);
-    Skill Spatial_Rend("Spatial_Rend", "Normal", 30, 10);
+    Skill Spatial_Rend("Spatial Rend", "Normal", 30, 10);
 
     Pokemon Pikachu(0, "Pikachu", 35, "Electric", Tackle, Grass_Knot, Thunderbolt, Megabolt);
     Pokemon Dratini(1, "Dratini", 41, "Water", Wrap, Aqua_Tail, Water_Pulse, Hyper_Beam);
