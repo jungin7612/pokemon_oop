@@ -48,6 +48,7 @@ public:
         skill_list[2] = s3;
         skill_list[3] = s4;
         last_used_skill = -1;
+        isSkillUsed = 0;
     }
     std::string getName() const { return name; }
     std::string getType() const { return type; }
@@ -91,18 +92,20 @@ public:
 
                 // 사용된 스킬 메시지 설정
                 skill_use_message = name + " used " + skill_list[skillIndex].getName() + ".";
+                isSkillUsed = 0;
             }
             else
             {
                 // 스킬 사용 실패 메시지 설정
                 skill_use_message = name + " failed to perform " + skill_list[skillIndex].getName() + ".";
-                effectiveness_message = "";
+                isSkillUsed = 1;
             }
         }
     }
 
     std::string getSkillUseMessage() const { return skill_use_message; }
     std::string getEffectivenessMessage() const { return effectiveness_message; }
+    int getIsSkillUsed() const { return isSkillUsed; }
 
 private:
     int number;
@@ -114,6 +117,7 @@ private:
     int last_used_skill;
     std::string skill_use_message;
     std::string effectiveness_message;
+    int isSkillUsed;
 
     bool isSuperEffective(const std::string &attackType, const std::string &defenderType)
     {
@@ -285,14 +289,22 @@ int main()
         {
             pokemons[Pokemon1].useSkill(skillChoice, pokemons[Pokemon2]);
             std::cout << pokemons[Pokemon1].getSkillUseMessage() << std::endl;
-            std::cout << pokemons[Pokemon1].getEffectivenessMessage() << std::endl;
+            if (pokemons[Pokemon1].getIsSkillUsed() == 0)
+            {
+                std::cout << pokemons[Pokemon1].getEffectivenessMessage() << std::endl;
+            }
+
             turn = 1;
         }
         else
         {
             pokemons[Pokemon2].useSkill(skillChoice, pokemons[Pokemon1]);
             std::cout << pokemons[Pokemon2].getSkillUseMessage() << std::endl;
-            std::cout << pokemons[Pokemon2].getEffectivenessMessage() << std::endl;
+            if (pokemons[Pokemon2].getIsSkillUsed() == 0)
+            {
+                std::cout << pokemons[Pokemon2].getEffectivenessMessage() << std::endl;
+            }
+
             turn = 0;
         }
 
