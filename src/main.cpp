@@ -217,10 +217,10 @@ void printTwoColumnContent(const Pokemon &leftPokemon, const Pokemon &rightPokem
     for (size_t i = 0; i < 4; ++i)
     {
         printRow("(" + std::to_string(i) + ") " + leftSkills[i].getName(), "(" + std::to_string(i) + ") " + rightSkills[i].getName(), 28, 28);
-        printRow("  - Type: " + leftSkills[i].getType(), "  - Type: " + rightSkills[i].getType(), 28, 28);
-        printRow("  - Damage: " + std::to_string(leftSkills[i].getDamage()), "  - Damage: " + std::to_string(rightSkills[i].getDamage()), 28, 28);
-        printRow("  - Count: " + std::to_string(leftSkills[i].getCurrentTry()) + "(" + std::to_string(leftSkills[i].getMaxTry()) + ")",
-                 "  - Count: " + std::to_string(rightSkills[i].getCurrentTry()) + "(" + std::to_string(rightSkills[i].getMaxTry()) + ")", 28, 28);
+        printRow("    - Type: " + leftSkills[i].getType(), "    - Type: " + rightSkills[i].getType(), 28, 28);
+        printRow("    - Damage: " + std::to_string(leftSkills[i].getDamage()), "    - Damage: " + std::to_string(rightSkills[i].getDamage()), 28, 28);
+        printRow("    - Count: " + std::to_string(leftSkills[i].getCurrentTry()) + "(" + std::to_string(leftSkills[i].getMaxTry()) + ")",
+                 "    - Count: " + std::to_string(rightSkills[i].getCurrentTry()) + "(" + std::to_string(rightSkills[i].getMaxTry()) + ")", 28, 28);
     }
 }
 
@@ -234,7 +234,7 @@ int main()
     Skill Wrap("Wrap", "Normal", 4, 10);
     Skill Aqua_Tail("Aqua Tail", "Water", 3, 5);
     Skill Water_Pulse("Water Pulse", "Water", 13, 2);
-    Skill Hyper_Beam("Hyper_Beam", "Normal", 20, 1);
+    Skill Hyper_Beam("Hyper Beam", "Normal", 20, 1);
 
     Skill Sand_Attack("Sand Attack", "Ground", 8, 3);
     Skill Bite("Bite", "Normal", 12, 3);
